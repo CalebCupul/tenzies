@@ -1,31 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Die from './Die'
 import { nanoid } from 'nanoid'
 
 function App() {
   const [dices, setDices] = useState(allNewDice())
+  const [tenzies, setTenzies] = useState(false)
+
+  useEffect(() => {
+    // pending use effect for winning logic
+  }, [dices])
 
   function allNewDice() {
     let diceArray = []
 
     for (let i = 0; i < 10; i++) {
-      diceArray.push({
-        id: nanoid(),
-        value: Math.ceil(Math.random() * 6),
-        isHeld: true,
-        hold: holdDice
-      })
+      diceArray.push(generateNewDie())
     }
     return diceArray
   }
 
-  // function holdDice(id) {
-  //   setDices(prevDices => {
-  //     return prevDices.map(dice => {
-  //       return dice.id === id ? { ...dice, isHeld: !dice.isHeld } : dice
-  //     })
-  //   })
-  // }
+  function generateNewDie() {
+    return {
+      id: nanoid(),
+      value: Math.ceil(Math.random() * 6),
+      isHeld: false,
+      hold: holdDice
+    }
+  }
 
   function holdDice(id) {
     setDices(prevDices => prevDices.map(dice => dice.id === id ? { ...dice, isHeld: !dice.isHeld } : dice))
@@ -34,7 +35,8 @@ function App() {
   const diceElements = dices.map((dice) => <Die key={dice.id} id={dice.id} value={dice.value} isHeld={dice.isHeld} hold={holdDice}></Die>)
 
   function rollDice() {
-    setDices(allNewDice())
+    setDices(prevDices => prevDices.map(dice => dice.isHeld ? dice : generateNewDie()))
+    setTenzies(prevTenzies => !prevTenzies)
   }
 
 
