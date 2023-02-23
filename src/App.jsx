@@ -7,7 +7,17 @@ function App() {
   const [tenzies, setTenzies] = useState(false)
 
   useEffect(() => {
-    // pending use effect for winning logic
+    const allHeld = dices.every(dice => dice.isHeld)
+    console.log('all held:' + allHeld)
+    const diceValue = dices[0].value
+    const allEqual = dices.every(dice => dice.value === diceValue)
+    console.log('all equal:' + allEqual)
+
+    if (allHeld && allEqual) {
+      setTenzies(true)
+    }
+    console.log(tenzies)
+
   }, [dices])
 
   function allNewDice() {
@@ -36,7 +46,6 @@ function App() {
 
   function rollDice() {
     setDices(prevDices => prevDices.map(dice => dice.isHeld ? dice : generateNewDie()))
-    setTenzies(prevTenzies => !prevTenzies)
   }
 
 
