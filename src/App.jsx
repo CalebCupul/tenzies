@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import Die from './Die'
 import { nanoid } from 'nanoid'
+import Confetti from 'react-confetti'
+
 
 function App() {
   const [dices, setDices] = useState(allNewDice())
@@ -8,15 +10,12 @@ function App() {
 
   useEffect(() => {
     const allHeld = dices.every(dice => dice.isHeld)
-    console.log('all held:' + allHeld)
     const diceValue = dices[0].value
     const allEqual = dices.every(dice => dice.value === diceValue)
-    console.log('all equal:' + allEqual)
 
     if (allHeld && allEqual) {
       setTenzies(true)
     }
-    console.log(tenzies)
 
   }, [dices])
 
@@ -45,6 +44,10 @@ function App() {
   const diceElements = dices.map((dice) => <Die key={dice.id} id={dice.id} value={dice.value} isHeld={dice.isHeld} hold={holdDice}></Die>)
 
   function rollDice() {
+    if (tenzies) {
+      setTenzies(false)
+      setDices(allNewDice())
+    }
     setDices(prevDices => prevDices.map(dice => dice.isHeld ? dice : generateNewDie()))
   }
 
@@ -61,7 +64,8 @@ function App() {
 
         </div>
         <div className='flex justify-center'>
-          <button onClick={rollDice} className=' text-white font-inter tracking-wider bg-dark-purple px-8 py-2 rounded-md mt-6 '>Roll</button>
+          <button onClick={rollDice} className=' text-white font-inter tracking-wider bg-dark-purple px-8 py-2 rounded-md mt-6 '>{tenzies ? 'New Game' : 'Roll'}</button>
+          {tenzies && <Confetti></Confetti>}
         </div>
       </div>
     </div>
